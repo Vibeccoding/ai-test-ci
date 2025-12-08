@@ -1,0 +1,22 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
+      - pip install pytest coverage boto3
+  pre_build:
+    commands:
+      - echo "Running AI test analysis..."
+  build:
+    commands:
+      - python ci_analyzer.py
+      - coverage run -m pytest tests/
+      - coverage report --format=json > coverage.json
+  post_build:
+    commands:
+      - echo "Build completed"
+artifacts:
+  files:
+    - coverage.json
+    - tests/**/*
