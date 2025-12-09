@@ -83,6 +83,6 @@ def analyze_with_bedrock(source_file, test_file):
 if __name__ == "__main__":
     results = analyze_with_bedrock("src/user_service.py", "tests/test_user_service.py")
     
-    # Save results
+    # Save results - FIXED: use json.dump() not json.dumps()
     with open("bedrock_analysis.json", "w") as f:
-        json.dumps(results, f, indent=2)
+        json.dump(results, f, indent=2)
