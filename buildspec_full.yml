@@ -1,0 +1,32 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
+      - pip install pytest coverage boto3
+  
+  pre_build:
+    commands:
+      - echo "Running CodeWhisperer security scan..."
+      - python codewhisperer_scanner.py
+  
+  build:
+    commands:
+      - echo "Running AI test analysis..."
+      - python ci_analyzer.py
+      - echo "Running tests with coverage..."
+      - coverage run -m pytest tests/
+      - coverage json -o coverage.json || coverage report
+  
+  post_build:
+    commands:
+      - echo "Build completed"
+      - echo "Checking security report..."
+      - test -f security-report.json && cat security-report.json || echo "No security report"
+
+artifacts:
+  files:
+    - coverage.json
+    - security-report.json
+    - tests/**/*
